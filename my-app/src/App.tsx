@@ -1,54 +1,40 @@
-import { useState, useEffect } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
-import { testServerConnection } from './UserService';
+// src/App.tsx
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LoginScreen from './screens/LoginScreen';
+import Dashboard from './components/Dashboard';
+import { User } from './types';
 
-function App() {
-  const [count, setCount] = useState(0);
-  const [serverMessage, setServerMessage] = useState<string>('');
-
-  useEffect(() => {
-    const checkServerConnection = async () => {
-      try {
-        const message = await testServerConnection();
-        setServerMessage(message);
-      } catch (error) {
-        setServerMessage('Failed to reach server');
-      }
-    };
-
-    checkServerConnection();
-  }, []);
+const App: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <div>
-        <h2>Server Connection Test</h2>
-        <p>{serverMessage}</p>
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route 
+          path="/login" 
+          element={
+            !user ? (
+              <LoginScreen setUser={setUser} />
+            ) : (
+              <Navigate to="/dashboard" replace />
+            )
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            user ? (
+              <Dashboard user={user} setUser={setUser} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } 
+        />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
