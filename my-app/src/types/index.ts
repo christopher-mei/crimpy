@@ -25,3 +25,19 @@ export interface User {
   export interface LoginProps {
     setUser: Dispatch<SetStateAction<User | null>>;  // Updated this type
   }
+  export interface SignUpProps {
+    switchToLogin: () => void;
+  }
+
+  export interface AuthContextType {
+    user: User | null;
+    token: string | null;
+    setUser: (user: User | null) => void;
+    login: (token: string, user: User) => void;
+    logout: () => void;
+  }
+
+  export interface DashboardProps {
+    user: User | null;
+    setUser: (user: User | null) => void;
+  }

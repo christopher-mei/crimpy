@@ -2,21 +2,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
+import { useAuth } from '../context/AuthContext';
+import { DashboardProps } from '../types';
 
-interface DashboardProps {
-  user: User | null;
-  setUser: (user: User | null) => void;
-}
 
-const Dashboard: React.FC<DashboardProps> = ({ user, setUser }) => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    navigate('/login');
-  };
-
+const Dashboard = () => {  
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();  // Remove setUser, just use logout
+  
+    const handleLogout = () => {
+      logout();           // Use context's logout function instead of manual logout
+      navigate('/login'); // Navigate after logout
+    };
   return (
     <div className="p-6">
       <div className="max-w-4xl mx-auto">

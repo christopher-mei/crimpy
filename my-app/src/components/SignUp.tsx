@@ -94,7 +94,6 @@ const SignUp: React.FC<SignUpProps> = ({ switchToLogin }) => {
     e.preventDefault();
     setError(null);
 
-    // Validate all fields before submitting
     if (!validateForm()) {
       setError('Please fix the validation errors before submitting');
       return;
@@ -103,17 +102,37 @@ const SignUp: React.FC<SignUpProps> = ({ switchToLogin }) => {
     setIsLoading(true);
 
     try {
+      // Log before making the request
+      console.log('About to make request with:', {
+        url: 'http://localhost:8080/api/users',
+        data: { username, password, email },
+        headers: axios.defaults.headers
+      });
+
       const response = await axios.post('http://localhost:8080/api/users', {
         username,
         password,
         email
       });
       
+      // Log successful response
+      console.log('Response data:', response.data);
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
       if (response.data) {
         console.log('Successfully signed up!');
         switchToLogin();
       }
     } catch (error) {
+      // Log error details
+      console.log('Error details:', {
+        isAxiosError: axios.isAxiosError(error),
+        status: error.response?.status,
+        data: error.response?.data,
+        headers: error.response?.headers
+      });
+
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || 'Sign up failed');
       } else {
@@ -122,7 +141,7 @@ const SignUp: React.FC<SignUpProps> = ({ switchToLogin }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+};
 
   const inputStyle = (hasError: boolean) => ({
     padding: '10px',

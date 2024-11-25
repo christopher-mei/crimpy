@@ -27,15 +27,15 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/users/test").permitAll()
+                // Add /api/users to permitAll
+                .requestMatchers("/api/auth/**", "/api/users/test", "/api/users").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());
-
+    
         return http.build();
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
